@@ -12,6 +12,7 @@
 #define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"seven",FORMAT,##__VA_ARGS__)
 
 #include <pthread.h>
+#include <malloc.h>
 #include "queue.h"
 #include "x264/include/x264.h"
 #include "rtmpdump/include/rtmp.h"
@@ -189,7 +190,7 @@ void *push_thread(void *arg) {
             }
             RTMPPacket_Free(packet);
         }
-
+;
         pthread_mutex_unlock(&mutex);
     }
     end:
@@ -509,14 +510,11 @@ JNIEXPORT  void JNICALL Java_com_example_cheng_videopush_jni_PushNative_fireVide
             //发送序列信息
             //h264关键帧会包含SPS和PPS数据
             add_264_sequence_header(pps, sps, pps_len, sps_len);
-
         } else {
             //发送帧信息
             add_264_body(nal[i].p_payload, nal[i].i_payload);
         }
-
     }
-
     (*env)->ReleaseByteArrayElements(env, buffer, nv21_buffer, NULL);
 }
 
